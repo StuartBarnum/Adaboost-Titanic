@@ -11,8 +11,7 @@ of boosting.
 Another motivation for this project was the fact that the Cart (classification and regresssion tree) algorithms, in contrast to other 
 algorithms such as Random Forest, allow that the predictive variables have missing (e.g. NA) values. Adabost can be built on top of Cart 
 (written so as to "boost" Cart). And, by writing the implementation of the boosting algorithm myself, I have been able to experiment with
-certain predictive variables that (perhaps) should not simply be imputed (filled in) with a package such as Mice, and with other aspects,
-for which it has been useful to have written the implementation myself.
+certain predictive variables that (perhaps) should not simply be imputed (filled in) with a package such as Mice, and experiment with other aspects, for which it has been useful to have written the implementation myself.
 
 One such other aspect is based on an hypothesis that, to at least some non-zero degree, families on the stricken ship tended to stand
 or fall together. That is, supposing that a certain member of a family survived (and controling for factors such as passenger class), 
