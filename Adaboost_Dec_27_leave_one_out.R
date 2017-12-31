@@ -208,22 +208,23 @@ titanic_adaboost <- function(train, test, iterations,
     #with the same surname appears in the training set), the value of this variable directly reflects 
     #information about the "correct" output value. For example, for any observation in the 
     #training set, if frac_Surname_survived = 1, then we know that the value of 
-    #Survived for this example is 1. This presents an overfitting and/or circularity problem that 
+    #Survived for this example is 1. This presents a circularity and  overfitting problem that 
     #must be overcome if this variable is to be used. Much of what follows is meant to 
     #address this issue. In particular, for the adaptive boosting implemented with the 
-    #following code, the variable "frac_Surname_survived" will be used in only every third
-    #iteration of the boosting algorithm (that is, iff the value of index is divisible by 3). 
-    #Furthermore, at these third iterations, the training set is partitioned into those elements 
+    #following code, the variable "frac_Surname_survived" will be used in only every fourth
+    #iteration of the boosting algorithm (that is, iff the value of index is divisible by 4). 
+    #Furthermore, at these fourth iterations, the training set is partitioned into those elements 
     #for which the surname is also reflected in the Kaggle training set (that is, those elements 
     #for which the variable in question may be helpful in predicting the outcome in the Kaggle 
     #training dataset) and those elements for which the surname is not so reflected. (The variable is
-    #thus ignored in those cases in which it is of no use.)
+    #thus ignored in those cases in which it is of no use. The overfitting is thus avoided for these
+    #examples)
     
     library(rpart)
     fol_1 <- formula(Survived ~ Pclass + Sex + Age_bin + Fare_bin + 
                      Title + SibSpPlusParch + Cabin_letter + 
                      Embarked + sum_Surname) 
-    if (index %% 3 == 0) {
+    if (index %% 4 == 0) {
       sample_1 <- sample[ which(is.na(sample$frac_Surname_survived)), ]
       sample_2 <- sample[ which(!is.na(sample$frac_Surname_survived)), ]
       fol_2 <- formula(Survived ~ Pclass + Sex + Age_bin + Fare_bin +
