@@ -2,13 +2,15 @@
 #and named "Kaggle_train.csv" and "Kaggle_test.csv", and that 3 cores are available for parallel 
 #computing (the program implements leave-one-out cross-checking in parallel). The script consits 
 #of a definition of a function that handles the data wrangling, a definition of a function that 
-#implements adaboost (adaptive boosting) over the Cart algorithm (implemented with the rpart 
+#implements adaboost (adaptive boosting) over a Cart algorithm (implemented with the rpart 
 #package), and the main program, which implements leave-one-out cross checking. The printed 
 #output of the program consists of both confusion matrices and average accuracies across the 
 #kaggle training dataset, with one confusion matrix and one average for each of the numbers of 
-#iterations of the adaboost algorithm. Depending on the settings one may choose in the main program, 
-#maximum accuracy (between 0.82 or 0.84) on the examples "left out" appears to occur at between 
-#6 and 16 adaboost iterations.
+#iterations of the adaboost algorithm. The output also includes a list, model_info_list, that 
+#contains one element for each iteration of the cross checking, and allows examination of the rpart
+#models and the adaboost weights and adjustment factors. Depending on the settings one may choose 
+#in the main program (together with an element of chance), maximum accuracy (between 0.82 or 0.84) 
+#on the examples "left out" appears to occur at between 3 and 16 adaboost iterations. 
 
 library(tidyverse)
 
