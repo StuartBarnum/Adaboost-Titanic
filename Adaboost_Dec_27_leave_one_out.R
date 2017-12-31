@@ -369,6 +369,12 @@ model_info_list <-
   
   adaboost_crossTest <- rbind(sample_frame, titanic_kaggle_test)
   
+  #The data wrangling is repeated in  every iteration of the parallel loop--one repeat for each
+  #element of the kaggle training set, which is "left out" once in the cross checking. As indicated
+  #in the comments in the definition of the titanic_wrangle function, the value of Survived is set 
+  #to NA for the left-out element, so as to avoid the pollution of the testing the data with the 
+  #"correct" output. (frac_Surname_survived is calculated using the value of Survived, with the "NA"s
+  #removed from the data that is averaged.)  
   wrangled <- 
     titanic_wrangle(adaboost_crossTrain, adaboost_crossTest)
   wrangled_crossTrain <- wrangled[[1]]
