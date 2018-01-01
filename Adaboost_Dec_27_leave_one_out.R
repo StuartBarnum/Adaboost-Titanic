@@ -1,16 +1,19 @@
-#Running script, assuming that the kaggle training and test datasets are in the working directory 
+#Running script, assuming that the Kaggle training and test datasets are in the working directory 
 #and named "Kaggle_train.csv" and "Kaggle_test.csv", and that 3 cores are available for parallel 
-#computing (the program implements leave-one-out cross-checking in parallel). The script consits 
+#processing (the program implements leave-one-out cross-checking in parallel). The script consits 
 #of a definition of a function that handles the data wrangling, a definition of a function that 
-#implements adaboost (adaptive boosting) over a Cart algorithm (implemented with the rpart 
-#package), and the main program, which implements leave-one-out cross validation. The printed 
-#output of the program consists of both confusion matrices and average accuracies across the 
-#kaggle training dataset, with one confusion matrix and one average for each of the numbers of 
-#iterations of the adaboost algorithm. The output also includes a list, model_info_list, that 
-#contains one element for each iteration of the cross checking, and allows examination of the rpart
-#models and the adaboost weights and adjustment factors. Depending on the settings one may choose 
-#in the main program (together with an element of chance), maximum accuracy (between 0.82 or 0.84) 
-#on the examples "left out" appears to occur at between 3 and 16 adaboost iterations. 
+#implements adaboost (adaptive boosting) over a CART algorithm (implemented with the rpart package),
+#and the main program, which implements the leave-one-out cross validation. (For each of the 
+#examples in the Kaggle training set, the Adaboost algorithm is implemted over the set of all of the 
+#other examples in the Kaggle training set, with the models thus derived used to make a prediction
+#over the one example that has been "left out.") The printed output of the program consists of both 
+#confusion matrices and average accuracies based on the these predictions, accross the entire Kaggle 
+#training dataset (with one confusion matrix and one average for each of the numbers of iterations 
+#of the adaboost algorithm). The output also includes a list, model_info_list, that contains one 
+#element for each iteration of the cross validation, and allows examination of the rpart models 
+#and the adaboost weights and adjustment factors. Depending on the settings one may choose at the 
+#top of the main program (together with an element of chance), maximum accuracy (between 0.82 or 
+#0.84) on the examples "left out" appears to occur at between 3 and 16 adaboost iterations. 
 
 library(tidyverse)
 
@@ -204,21 +207,21 @@ titanic_adaboost <- function(train, test, iterations,
     #test_cases <- train[-sample_row_num, ]
     
     #Although frac_Surname_survived may be a useful predictor for the Titanic passengers
-    #in those cases for which a value can be directly estimated (those cases in which someone 
-    #with the same surname appears in the training set), the value of this variable directly reflects 
-    #information about the "correct" output value. For example, for any observation in the 
-    #training set, if frac_Surname_survived = 1, then we know that the value of 
-    #Survived for this example is 1. This presents a circularity and  overfitting problem that 
+    #in those cases in the test set for which a value can be directly estimated (those cases 
+    #in which someone with the same surname appears in the training set), the value of this 
+    #variable for the examples in the training set directly reflects information about the 
+    #"correct" output value for this example. For instance, for any observation in the 
+    #training set, if frac_Surname_survived = 1, then we know that the value of Survived 
+    #for this example is 1. This presents a circularity and overfitting problem that 
     #must be overcome if this variable is to be used. Much of what follows is meant to 
     #address this issue. In particular, for the adaptive boosting implemented with the 
     #following code, the variable "frac_Surname_survived" will be used in only every fourth
     #iteration of the boosting algorithm (that is, iff the value of index is divisible by 4). 
     #Furthermore, at these fourth iterations, the training set is partitioned into those elements 
-    #for which the surname is also reflected in the Kaggle training set (that is, those elements 
+    #for which the surname is also reflected in the Kaggle test set (that is, those elements 
     #for which the variable in question may be helpful in predicting the outcome in the Kaggle 
-    #training dataset) and those elements for which the surname is not so reflected. (The variable is
-    #thus ignored in those cases in which it is of no use. The overfitting is thus avoided for these
-    #examples)
+    #test dataset) and those elements for which the surname is not so reflected. The variable is
+    #thus ignored in those cases in which it is of no use. 
     
     library(rpart)
     fol_1 <- formula(Survived ~ Pclass + Sex + Age_bin + Fare_bin + 
@@ -262,7 +265,7 @@ titanic_adaboost <- function(train, test, iterations,
       model <- list(model_1, model_2)   #for the purpose of examining after running
                                         #the parallel loop
       
-    #the case where index is NOT divisible by 3, and so where frac_Surname_survived is not used:
+    #the case where index is NOT divisible by 4, and so where frac_Surname_survived is not used:
     } else {
       model <- rpart(fol_1, data = sample, 
                      method = "class", weights = sample$weights,
@@ -383,6 +386,7 @@ model_info_list <-
   wrangled_crossTrain <- wrangled[[1]]
   wrangled_crossTest <- wrangled[[2]]
   
+  #the information to be added to model_info_list, at this iteration of parallel loop:
   prediction_and_info <- 
     titanic_adaboost(wrangled_crossTrain, wrangled_crossTest, 
                      iterations = ada_iterations, 
