@@ -3,7 +3,7 @@
 #computing (the program implements leave-one-out cross-checking in parallel). The script consits 
 #of a definition of a function that handles the data wrangling, a definition of a function that 
 #implements adaboost (adaptive boosting) over a Cart algorithm (implemented with the rpart 
-#package), and the main program, which implements leave-one-out cross checking. The printed 
+#package), and the main program, which implements leave-one-out cross validation. The printed 
 #output of the program consists of both confusion matrices and average accuracies across the 
 #kaggle training dataset, with one confusion matrix and one average for each of the numbers of 
 #iterations of the adaboost algorithm. The output also includes a list, model_info_list, that 
