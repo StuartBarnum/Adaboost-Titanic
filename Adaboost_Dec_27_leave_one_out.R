@@ -15,7 +15,7 @@
 #choose at the top of the main program (together with an element of chance), maximum accuracy 
 #(between 0.81 and 0.84) on the examples "left out" appears to occur at between 3 and 20 adaboost 
 #iterations. Also depending on the settings (particularly the number the number of adaboost 
-#iterations), the size of model_input_list can be as great as several gigabytes.
+#iterations), the size of model_output_list can be as great as several gigabytes.
 
 library(tidyverse)
 
