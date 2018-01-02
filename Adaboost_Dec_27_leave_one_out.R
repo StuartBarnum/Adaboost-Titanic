@@ -1,24 +1,26 @@
 #Running script, assuming that the Kaggle training and test datasets are in the working directory 
 #and named "Kaggle_train.csv" and "Kaggle_test.csv", and that 3 cores are available for parallel 
-#processing (the program implements leave-one-out cross-checking in parallel). The script consits 
+#processing (the program implements leave-one-out cross-checking in parallel). The script consists 
 #of a definition of a function that handles the data wrangling, a definition of a function that 
 #implements adaboost (adaptive boosting) over a CART algorithm (implemented with the rpart package),
 #and the main program, which implements the leave-one-out cross validation. (For each of the 
-#examples in the Kaggle training set, the Adaboost algorithm is implemted over the set of all of the 
-#other examples in the Kaggle training set, with the models thus derived used to make a prediction
-#over the one example that has been "left out.") The printed output of the program consists of both 
-#confusion matrices and average accuracies based on the these predictions, accross the entire Kaggle 
-#training dataset (with one confusion matrix and one average for each of the numbers of iterations 
-#of the adaboost algorithm). The output also includes a list, model_info_list, that contains one 
-#element for each iteration of the cross validation, and allows examination of the rpart models 
-#and the adaboost weights and adjustment factors. Depending on the settings one may choose at the 
-#top of the main program (together with an element of chance), maximum accuracy (between 0.82 or 
-#0.84) on the examples "left out" appears to occur at between 3 and 16 adaboost iterations. 
+#examples in the Kaggle training dataset, the Adaboost algorithm is implemented over the set of all 
+#of the other examples in the Kaggle training dataset, with the models thus derived used to make a 
+#prediction over the one example that has been "left out.") The printed output of the program 
+#consists of both confusion matrices and average accuracies based on the these predictions, accross 
+#the entire Kaggle training dataset (with one confusion matrix and one average for each of the 
+#numbers of iterations of the adaboost algorithm). The output also includes a list, model_info_list, 
+#that contains one element for each iteration of the cross validation, and allows examination of the 
+#rpart models and the adaboost weights and adjustment factors. Depending on the settings one may 
+#choose at the top of the main program (together with an element of chance), maximum accuracy 
+#(between 0.81 and 0.84) on the examples "left out" appears to occur at between 3 and 20 adaboost 
+#iterations. Also depending on the settings (particularly the number the number of adaboost 
+#iterations), the size of model_input_list can be as great as several gigabytes.
 
 library(tidyverse)
 
 #For import of the downloaded Kaggle training and test sets:
-#setwd("~/Desktop/R files/Titanic Project")
+#setwd("~/Desktop/R files/Adaboost-Titanic")
 
 #For reading in the data and testing elements of the function titanic_wrangle:
 #train <- read_csv("Kaggle_train .csv")
@@ -183,7 +185,7 @@ titanic_adaboost <- function(train, test, iterations,
   #initialize the weights to be applied to each example in the training set
   train$weights <- 1/num_rows         
   
-  accuracies <- list() #??initializing the list of accuracies, measured on examples left??
+  #accuracies <- list() #??initializing the list of accuracies, measured on examples left out??
   
   models <- list() #initializing the list of rpart models
   weights <- list() #initiallizing a sum to be taken over the iterations in the for loop
@@ -213,21 +215,23 @@ titanic_adaboost <- function(train, test, iterations,
     #"correct" output value for this example. For instance, for any observation in the 
     #training set, if frac_Surname_survived = 1, then we know that the value of Survived 
     #for this example is 1. This presents a circularity and overfitting problem that 
-    #must be overcome if this variable is to be used. Much of what follows is meant to 
-    #address this issue. In particular, for the adaptive boosting implemented with the 
-    #following code, the variable "frac_Surname_survived" will be used in only every fourth
-    #iteration of the boosting algorithm (that is, iff the value of index is divisible by 4). 
-    #Furthermore, at these fourth iterations, the training set is partitioned into those elements 
-    #for which the surname is also reflected in the Kaggle test set (that is, those elements 
-    #for which the variable in question may be helpful in predicting the outcome in the Kaggle 
-    #test dataset) and those elements for which the surname is not so reflected. The variable is
-    #thus ignored in those cases in which it is of no use. 
+    #must be overcome if this variable is to be used. (The model may tend to be unduly focussed
+    #on frac_Surname_survived.) Much of what follows is meant to address this issue. In particular, 
+    #for the adaptive boosting implemented with the following code, the variable 
+    #"frac_Surname_survived" will be used in only every third iteration of the boosting algorithm, 
+    #beginning with the second iteration. Furthermore, at these iterations, the training set is 
+    #partitioned into those elements for which the surname is also reflected in the Kaggle test set 
+    #(that is, those elements for which the variable in question may be helpful in predicting 
+    #the outcome in the Kaggle test dataset) and those elements for which the surname is not so 
+    #reflected. The variable is thus ignored in those cases in which it is of no use. I have have
+    #also, for the cases in which frac_Surname_survived will be used as a predictive variable, 
+    #experiemented with the cost parameter of the rpart package.
     
     library(rpart)
     fol_1 <- formula(Survived ~ Pclass + Sex + Age_bin + Fare_bin + 
                      Title + SibSpPlusParch + Cabin_letter + 
                      Embarked + sum_Surname) 
-    if (index %% 4 == 0) {
+    if (index %% 3 == 2) {
       sample_1 <- sample[ which(is.na(sample$frac_Surname_survived)), ]
       sample_2 <- sample[ which(!is.na(sample$frac_Surname_survived)), ]
       fol_2 <- formula(Survived ~ Pclass + Sex + Age_bin + Fare_bin +
@@ -235,10 +239,11 @@ titanic_adaboost <- function(train, test, iterations,
                        frac_Surname_survived + Embarked + sum_Surname)
       model_1 <- rpart(fol_1, data = sample_1, 
                        method = "class", weights = sample_1$weights,
-                       control = rpart.control(maxdepth = tree_depth-1, #sutracted 1 b/c of partitioning
+                       control = rpart.control(maxdepth = tree_depth, #perhaps sutract 1 b/c of partitioning
                                                cp = min_cp))
       model_2 <- rpart(fol_2, data = sample_2, 
                      method = "class", weights = sample_2$weights,
+                     cost = c(c_f, c_f, c_f, c_f, c_f, c_f, c_f, 1/c_f, c_f, c_f),
                      control = rpart.control(maxdepth = tree_depth-1, #sutracted 1 b/c of partitioning
                                              cp = min_cp))
       
@@ -302,8 +307,9 @@ titanic_adaboost <- function(train, test, iterations,
     train <- transform(train,
       weights = weights/sum(weights))
     
-    #save the weight, rpart model(s), and adjustment factor in a list, for accessing after 
-    #running the program
+    #save the weight on the model(s) in this iteration, the model(s), and the adjustment factor
+    #in a list (for both calculating the adaboost prediction and for  examing after running the
+    #program
     weights[[index]] <- log((1-sum_weights_misclassified)/sum_weights_misclassified)
     models[[index]] <- model
     adjustment_factors[[index]] <- adjustment_factor
@@ -344,13 +350,10 @@ titanic_adaboost <- function(train, test, iterations,
 titanic_kaggle_train <- read_csv("Kaggle_train .csv")
 titanic_kaggle_test <- read_csv("Kaggle_test.csv")
 
-#training <- titanic_kaggle_train
-#titanic_kaggle_test <- titanic_kaggle_test %>%
-#  mutate(Survived = NA)
-
-ada_iterations <- 40
-max_rpart_depth <- 3
-min_rpart_cp <- .02
+ada_iterations <- 60 #number of adaboost iterations
+max_rpart_depth <- 2 #maximum tree depth
+min_rpart_cp <- .02 #minimum improvement in "complexity" in the building of the trees
+c_f <- .4 #factor for adjusting the costs associated with the variabls in the rpart models
 
 library(doParallel)
 library(foreach)
