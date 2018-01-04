@@ -22,7 +22,7 @@ variable for the members of the a family. In this case, (for example) for each o
 ship, the survival percentage is either zero or 100 percent, depending on whether that individual survives. Clearly not a useful predictor!
 However, for an individual for whom we don't know the result (of survival versus non-survival), this average, accros all family members for whom the result is known, may be a useful predictor
 (again, even if we control for factors such as passenger class). One of my aims was to see if I could make such an average (or something like this
-average, based on surnames) a useful predictor, and to somehow overcome the model-overfitting issues (associated with the circularity issue) that a variable such as this can
+average, based on surnames) a useful predictor, and to see if it is possible to overcome the model-overfitting issues (associated with the circularity issue) that a variable such as this can
 introduce.
 
 
