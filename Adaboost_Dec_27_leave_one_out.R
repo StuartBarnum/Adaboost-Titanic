@@ -231,7 +231,7 @@ titanic_adaboost <- function(train, test, iterations,
     fol_1 <- formula(Survived ~ Pclass + Sex + Age_bin + Fare_bin + 
                      Title + SibSpPlusParch + Cabin_letter + 
                      Embarked + sum_Surname) 
-    if (index %% 3 == 2) {
+    if (index %% 5 == 2) {
       sample_1 <- sample[ which(is.na(sample$frac_Surname_survived)), ]
       sample_2 <- sample[ which(!is.na(sample$frac_Surname_survived)), ]
       fol_2 <- formula(Survived ~ Pclass + Sex + Age_bin + Fare_bin +

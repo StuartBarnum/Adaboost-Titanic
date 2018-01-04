@@ -5,7 +5,7 @@ This project has various motivations, beginning with my interest in exploring th
 both its accuracy and the behavior of the quantities responsible for the boosting: the various weights applied to the examples
 in the training dataset and the weights applied to predictions made by the "weak" classifiers. (On adaboost, or "adaptive boosting," 
 see, for example, http://rob.schapire.net/papers/explaining-adaboost.pdf .)  The Titanic dataset is relatively small and simple, thus
-allowing for relatively fast processing and cross-checking, and examimation of the behavior of the algorithm over successive iterations
+allowing for relatively fast processing and cross-validation, and examimation of the behavior of the algorithm over successive iterations
 of boosting.
 
 Another motivation for this project was the fact that the Cart (classification and regresssion tree) algorithms, in contrast to other 
@@ -21,7 +21,7 @@ circularity. For example, it might seem natural to use the survival percentage, 
 variable for the members of the a family. In this case, (for example) for each of the families that have exactly one representative on the
 ship, the survival percentage is either zero or 100 percent, depending on whether that individual survives. Clearly not a useful predictor!
 However, for an individual for whom we don't know the result (of survival versus non-survival), this average, accros all family members for whom the result is known, may be a useful predictor
-(again, even if we control for factors such as passenger class). One of my aims was make such an average (or something like this
+(again, even if we control for factors such as passenger class). One of my aims was to see if I could make such an average (or something like this
 average, based on surnames) a useful predictor, and to somehow overcome the model-overfitting issues (associated with the circularity issue) that a variable such as this can
 introduce.
 
