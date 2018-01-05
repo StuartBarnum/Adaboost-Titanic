@@ -1,6 +1,6 @@
 #Running script, assuming that the Kaggle training and test datasets are in the working directory 
 #and named "Kaggle_train.csv" and "Kaggle_test.csv", and that 3 cores are available for parallel 
-#processing (the program implements leave-one-out cross-checking in parallel). The script consists 
+#processing (the program implements leave-one-out cross-validation in parallel). The script consists 
 #of a definition of a function that handles the data wrangling, a definition of a function that 
 #implements adaboost (adaptive boosting) over a CART algorithm (implemented with the rpart package),
 #and the main program, which implements the leave-one-out cross validation. (For each of the 
@@ -41,7 +41,7 @@ titanic_wrangle <- function(train, test) {
   #(or leave them as such if they are already NA), after saving these
   #values in a vector (to be restored to the test data frame  after the 
   #wrangling is finished). This step is intended to help avoid bias in cross
-  #checking, due to calculation of new columns on the basis of the 
+  #validation, due to calculation of new columns on the basis of the 
   #correct output (the frac_Surname_Survived variable that will be introduced
   #in the wrangling)
   if ("Survived" %in% names(test)) {
