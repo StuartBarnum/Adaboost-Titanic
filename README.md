@@ -1,5 +1,5 @@
 # Adaboost-Titanic
-## An implementation of the Adaboost meta-algorithm, written in R and and applied to a processed version of the Kaggle Titanic data
+## An implementation of the Adaboost meta-algorithm, written in R and applied to the Kaggle Titanic dataset
 
 This project has various motivations, beginning with my interest in exploring the behavior of the Adaboost algorithm, with respect to
 both its accuracy and the behavior of the quantities responsible for the boosting: the various weights applied to the examples
