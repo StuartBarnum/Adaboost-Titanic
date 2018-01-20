@@ -1,7 +1,7 @@
 Adaboost\_Dec\_27\_leave\_one\_out.R
 ================
 stuartbarnum
-Sat Jan 20 08:05:31 2018
+Sat Jan 20 12:14:43 2018
 
 ``` r
 #Running script, assuming that the Kaggle training and test datasets are in the working directory 
@@ -26,14 +26,14 @@ Sat Jan 20 08:05:31 2018
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
     ## ✔ tibble  1.4.1     ✔ dplyr   0.7.4
     ## ✔ tidyr   0.7.2     ✔ stringr 1.2.0
     ## ✔ readr   1.1.1     ✔ forcats 0.2.0
 
-    ## ── Conflicts ────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -216,7 +216,7 @@ titanic_adaboost <- function(train, test, iterations,
     #weights (as prescribed in the Adaboost meta-algorithm) are used to determine the relative import
     #of the respective datapoints in an rpart implementation on the sample. I also experimented with 
     #using the weights to determine the relative probabilities for selection in the sample (I did that
-    #first). However, the performance (accuracy in cross-checking) was rather disapointing, with 
+    #first). However, the performance (accuracy in cross-validation) was rather disapointing, with 
     #many of the weights rather quickly converging to zero. 
     
     sample_row_num <- sample(1:num_rows, num_rows,
@@ -438,7 +438,7 @@ model_info_list <-
   
   adaboost_cross_check <- titanic_kaggle_train
   
-  #for leave-one-out-cross checking, each "sample" consists of one row in the data frame:
+  #for leave-one-out-cross validation, each "sample" consists of one row in the data frame:
   sample_Id <- index
     
   sample_frame <- adaboost_cross_check[sample_Id, ] #the one-row "data frame"
@@ -450,7 +450,7 @@ model_info_list <-
   adaboost_crossTest <- rbind(sample_frame, titanic_kaggle_test)
   
   #The data wrangling is repeated in  every iteration of the parallel loop--one repeat for each
-  #element of the kaggle training set, which is "left out" once in the cross checking. As indicated
+  #element of the kaggle training set, which is "left out" once in the cross validation. As indicated
   #in the comments in the definition of the titanic_wrangle function, the value of Survived is set 
   #to NA for the left-out element, so as to avoid the pollution of the testing the data with the 
   #"correct" output. (frac_Surname_survived is calculated using the value of Survived, with the "NA"s
@@ -500,110 +500,110 @@ cross_confusion_list #with the list # equal to the # of iterations of the adapti
     ## [[1]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1 126 216
+    ##    0 485  64
+    ##    1 116 226
     ## 
     ## [[2]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1 126 216
+    ##    0 485  64
+    ##    1 116 226
     ## 
     ## [[3]]
     ##     truth
     ## pred   0   1
-    ##    0 462  87
-    ##    1 101 241
+    ##    0 467  82
+    ##    1 104 238
     ## 
     ## [[4]]
-    ##     truth
-    ## pred   0   1
-    ##    0 489  60
-    ##    1 102 240
-    ## 
-    ## [[5]]
     ##     truth
     ## pred   0   1
     ##    0 484  65
     ##    1 103 239
     ## 
+    ## [[5]]
+    ##     truth
+    ## pred   0   1
+    ##    0 485  64
+    ##    1  98 244
+    ## 
     ## [[6]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1 102 240
+    ##    0 481  68
+    ##    1 100 242
     ## 
     ## [[7]]
     ##     truth
     ## pred   0   1
-    ##    0 485  64
-    ##    1 105 237
+    ##    0 477  72
+    ##    1  97 245
     ## 
     ## [[8]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1 103 239
+    ##    0 478  71
+    ##    1 101 241
     ## 
     ## [[9]]
     ##     truth
     ## pred   0   1
-    ##    0 480  69
-    ##    1 103 239
+    ##    0 482  67
+    ##    1  99 243
     ## 
     ## [[10]]
     ##     truth
     ## pred   0   1
-    ##    0 479  70
-    ##    1 100 242
+    ##    0 480  69
+    ##    1  99 243
     ## 
     ## [[11]]
     ##     truth
     ## pred   0   1
-    ##    0 477  72
-    ##    1 101 241
+    ##    0 487  62
+    ##    1  97 245
     ## 
     ## [[12]]
     ##     truth
     ## pred   0   1
-    ##    0 481  68
-    ##    1 107 235
+    ##    0 482  67
+    ##    1  99 243
     ## 
     ## [[13]]
     ##     truth
     ## pred   0   1
-    ##    0 480  69
-    ##    1 100 242
+    ##    0 488  61
+    ##    1 101 241
     ## 
     ## [[14]]
     ##     truth
     ## pred   0   1
     ##    0 482  67
-    ##    1 101 241
+    ##    1  99 243
     ## 
     ## [[15]]
     ##     truth
     ## pred   0   1
-    ##    0 484  65
-    ##    1 103 239
+    ##    0 482  67
+    ##    1  95 247
     ## 
     ## [[16]]
     ##     truth
     ## pred   0   1
-    ##    0 486  63
+    ##    0 483  66
     ##    1 100 242
     ## 
     ## [[17]]
     ##     truth
     ## pred   0   1
-    ##    0 486  63
-    ##    1 101 241
+    ##    0 481  68
+    ##    1 100 242
     ## 
     ## [[18]]
     ##     truth
     ## pred   0   1
-    ##    0 485  64
-    ##    1 100 242
+    ##    0 483  66
+    ##    1 103 239
     ## 
     ## [[19]]
     ##     truth
@@ -614,259 +614,259 @@ cross_confusion_list #with the list # equal to the # of iterations of the adapti
     ## [[20]]
     ##     truth
     ## pred   0   1
-    ##    0 484  65
-    ##    1  97 245
+    ##    0 482  67
+    ##    1  99 243
     ## 
     ## [[21]]
     ##     truth
     ## pred   0   1
-    ##    0 485  64
-    ##    1  96 246
+    ##    0 483  66
+    ##    1  99 243
     ## 
     ## [[22]]
     ##     truth
     ## pred   0   1
-    ##    0 484  65
-    ##    1  97 245
+    ##    0 475  74
+    ##    1  98 244
     ## 
     ## [[23]]
     ##     truth
     ## pred   0   1
-    ##    0 485  64
-    ##    1  98 244
+    ##    0 475  74
+    ##    1 102 240
     ## 
     ## [[24]]
     ##     truth
     ## pred   0   1
-    ##    0 485  64
-    ##    1  93 249
+    ##    0 477  72
+    ##    1  98 244
     ## 
     ## [[25]]
     ##     truth
     ## pred   0   1
-    ##    0 487  62
-    ##    1  94 248
+    ##    0 477  72
+    ##    1 101 241
     ## 
     ## [[26]]
     ##     truth
     ## pred   0   1
-    ##    0 487  62
-    ##    1  94 248
+    ##    0 479  70
+    ##    1  99 243
     ## 
     ## [[27]]
     ##     truth
     ## pred   0   1
-    ##    0 484  65
-    ##    1  94 248
+    ##    0 474  75
+    ##    1  99 243
     ## 
     ## [[28]]
     ##     truth
     ## pred   0   1
-    ##    0 484  65
-    ##    1  95 247
+    ##    0 477  72
+    ##    1  98 244
     ## 
     ## [[29]]
     ##     truth
     ## pred   0   1
-    ##    0 483  66
-    ##    1  95 247
+    ##    0 479  70
+    ##    1  94 248
     ## 
     ## [[30]]
     ##     truth
     ## pred   0   1
-    ##    0 484  65
-    ##    1  93 249
+    ##    0 482  67
+    ##    1  94 248
     ## 
     ## [[31]]
     ##     truth
     ## pred   0   1
-    ##    0 483  66
-    ##    1  93 249
+    ##    0 479  70
+    ##    1  95 247
     ## 
     ## [[32]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1  95 247
+    ##    0 478  71
+    ##    1  89 253
     ## 
     ## [[33]]
     ##     truth
     ## pred   0   1
     ##    0 481  68
-    ##    1  98 244
+    ##    1  95 247
     ## 
     ## [[34]]
     ##     truth
     ## pred   0   1
-    ##    0 483  66
-    ##    1  95 247
+    ##    0 478  71
+    ##    1  98 244
     ## 
     ## [[35]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1  97 245
+    ##    0 478  71
+    ##    1  93 249
     ## 
     ## [[36]]
     ##     truth
     ## pred   0   1
-    ##    0 478  71
-    ##    1  96 246
+    ##    0 480  69
+    ##    1  93 249
     ## 
     ## [[37]]
     ##     truth
     ## pred   0   1
-    ##    0 483  66
-    ##    1 101 241
+    ##    0 484  65
+    ##    1  95 247
     ## 
     ## [[38]]
     ##     truth
     ## pred   0   1
-    ##    0 481  68
-    ##    1 102 240
+    ##    0 484  65
+    ##    1  95 247
     ## 
     ## [[39]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1  98 244
+    ##    0 483  66
+    ##    1  94 248
     ## 
     ## [[40]]
     ##     truth
     ## pred   0   1
-    ##    0 480  69
-    ##    1  99 243
+    ##    0 485  64
+    ##    1  92 250
     ## 
     ## [[41]]
     ##     truth
     ## pred   0   1
-    ##    0 481  68
-    ##    1  98 244
+    ##    0 483  66
+    ##    1  93 249
     ## 
     ## [[42]]
     ##     truth
     ## pred   0   1
-    ##    0 479  70
-    ##    1  96 246
+    ##    0 482  67
+    ##    1  93 249
     ## 
     ## [[43]]
     ##     truth
     ## pred   0   1
-    ##    0 480  69
-    ##    1  99 243
+    ##    0 481  68
+    ##    1  90 252
     ## 
     ## [[44]]
     ##     truth
     ## pred   0   1
-    ##    0 478  71
-    ##    1 100 242
+    ##    0 481  68
+    ##    1  91 251
     ## 
     ## [[45]]
     ##     truth
     ## pred   0   1
-    ##    0 479  70
-    ##    1  99 243
+    ##    0 483  66
+    ##    1  89 253
     ## 
     ## [[46]]
     ##     truth
     ## pred   0   1
-    ##    0 479  70
-    ##    1  97 245
+    ##    0 481  68
+    ##    1  86 256
     ## 
     ## [[47]]
     ##     truth
     ## pred   0   1
-    ##    0 483  66
-    ##    1  99 243
+    ##    0 477  72
+    ##    1  92 250
     ## 
     ## [[48]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1  98 244
+    ##    0 475  74
+    ##    1  88 254
     ## 
     ## [[49]]
     ##     truth
     ## pred   0   1
-    ##    0 485  64
-    ##    1  97 245
+    ##    0 478  71
+    ##    1  89 253
     ## 
     ## [[50]]
     ##     truth
     ## pred   0   1
-    ##    0 483  66
-    ##    1  99 243
+    ##    0 477  72
+    ##    1  91 251
     ## 
     ## [[51]]
     ##     truth
     ## pred   0   1
-    ##    0 484  65
-    ##    1 103 239
+    ##    0 478  71
+    ##    1  90 252
     ## 
     ## [[52]]
     ##     truth
     ## pred   0   1
-    ##    0 481  68
-    ##    1  99 243
+    ##    0 476  73
+    ##    1  91 251
     ## 
     ## [[53]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1  99 243
+    ##    0 477  72
+    ##    1  92 250
     ## 
     ## [[54]]
     ##     truth
     ## pred   0   1
-    ##    0 479  70
-    ##    1 103 239
+    ##    0 475  74
+    ##    1  91 251
     ## 
     ## [[55]]
     ##     truth
     ## pred   0   1
-    ##    0 480  69
-    ##    1  98 244
+    ##    0 475  74
+    ##    1  87 255
     ## 
     ## [[56]]
     ##     truth
     ## pred   0   1
-    ##    0 480  69
-    ##    1  98 244
+    ##    0 475  74
+    ##    1  92 250
     ## 
     ## [[57]]
     ##     truth
     ## pred   0   1
-    ##    0 481  68
-    ##    1  98 244
+    ##    0 478  71
+    ##    1  96 246
     ## 
     ## [[58]]
     ##     truth
     ## pred   0   1
-    ##    0 480  69
-    ##    1 101 241
+    ##    0 478  71
+    ##    1  95 247
     ## 
     ## [[59]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1  97 245
+    ##    0 478  71
+    ##    1  96 246
     ## 
     ## [[60]]
     ##     truth
     ## pred   0   1
-    ##    0 482  67
-    ##    1 100 242
+    ##    0 476  73
+    ##    1  94 248
 
 ``` r
-averages #in the order of the number of iterations
+averages  #leave-one-out cross-validation averages, in the order of the # of boosting iterations
 ```
 
-    ##  [1] 0.7833895 0.7833895 0.7890011 0.8181818 0.8114478 0.8103255 0.8103255
-    ##  [8] 0.8092031 0.8069585 0.8092031 0.8058361 0.8035915 0.8103255 0.8114478
-    ## [15] 0.8114478 0.8170595 0.8159371 0.8159371 0.8148148 0.8181818 0.8204265
-    ## [22] 0.8181818 0.8181818 0.8237935 0.8249158 0.8249158 0.8215488 0.8204265
-    ## [29] 0.8193042 0.8226712 0.8215488 0.8181818 0.8136925 0.8193042 0.8159371
-    ## [36] 0.8125701 0.8125701 0.8092031 0.8148148 0.8114478 0.8136925 0.8136925
-    ## [43] 0.8114478 0.8080808 0.8103255 0.8125701 0.8148148 0.8148148 0.8193042
-    ## [50] 0.8148148 0.8114478 0.8125701 0.8136925 0.8058361 0.8125701 0.8125701
-    ## [57] 0.8136925 0.8092031 0.8159371 0.8125701
+    ##  [1] 0.7979798 0.7979798 0.7912458 0.8114478 0.8181818 0.8114478 0.8103255
+    ##  [8] 0.8069585 0.8136925 0.8114478 0.8215488 0.8136925 0.8181818 0.8136925
+    ## [15] 0.8181818 0.8136925 0.8114478 0.8103255 0.8148148 0.8136925 0.8148148
+    ## [22] 0.8069585 0.8024691 0.8092031 0.8058361 0.8103255 0.8047138 0.8092031
+    ## [29] 0.8159371 0.8193042 0.8148148 0.8204265 0.8170595 0.8103255 0.8159371
+    ## [36] 0.8181818 0.8204265 0.8204265 0.8204265 0.8249158 0.8215488 0.8204265
+    ## [43] 0.8226712 0.8215488 0.8260382 0.8271605 0.8159371 0.8181818 0.8204265
+    ## [50] 0.8170595 0.8193042 0.8159371 0.8159371 0.8148148 0.8193042 0.8136925
+    ## [57] 0.8125701 0.8136925 0.8125701 0.8125701

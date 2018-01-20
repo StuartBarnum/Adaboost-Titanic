@@ -197,7 +197,7 @@ titanic_adaboost <- function(train, test, iterations,
     #weights (as prescribed in the Adaboost meta-algorithm) are used to determine the relative import
     #of the respective datapoints in an rpart implementation on the sample. I also experimented with 
     #using the weights to determine the relative probabilities for selection in the sample (I did that
-    #first). However, the performance (accuracy in cross-checking) was rather disapointing, with 
+    #first). However, the performance (accuracy in cross-validation) was rather disapointing, with 
     #many of the weights rather quickly converging to zero. 
     
     sample_row_num <- sample(1:num_rows, num_rows,
@@ -367,7 +367,7 @@ model_info_list <-
   
   adaboost_cross_check <- titanic_kaggle_train
   
-  #for leave-one-out-cross checking, each "sample" consists of one row in the data frame:
+  #for leave-one-out-cross validation, each "sample" consists of one row in the data frame:
   sample_Id <- index
     
   sample_frame <- adaboost_cross_check[sample_Id, ] #the one-row "data frame"
@@ -379,7 +379,7 @@ model_info_list <-
   adaboost_crossTest <- rbind(sample_frame, titanic_kaggle_test)
   
   #The data wrangling is repeated in  every iteration of the parallel loop--one repeat for each
-  #element of the kaggle training set, which is "left out" once in the cross checking. As indicated
+  #element of the kaggle training set, which is "left out" once in the cross validation. As indicated
   #in the comments in the definition of the titanic_wrangle function, the value of Survived is set 
   #to NA for the left-out element, so as to avoid the pollution of the testing the data with the 
   #"correct" output. (frac_Surname_survived is calculated using the value of Survived, with the "NA"s
@@ -425,4 +425,4 @@ for (index in 1:ada_iterations) {
 
 cross_confusion_list #with the list # equal to the # of iterations of the adaptive boosting
 
-averages #in the order of the number of iterations
+averages  #leave-one-out cross-validation averages, in the order of the # of boosting iterations
