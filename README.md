@@ -23,6 +23,6 @@ ship, the survival percentage is either zero or 100 percent, depending on whethe
 However, for an individual for whom we don't know the result (of survival versus non-survival), this average, accros all family members for whom the result is known, may be a useful predictor
 (again, even if we control for factors such as passenger class). One of my aims was to test this hypothesis.
 
-The file Adaboost_Dec_27_leave_one_out.md contains both the code and some results.
+https://github.com/StuartBarnum/Adaboost-Titanic/blob/master/Adaboost_Dec_27_leave_one_out.md contains both the code and some results.
 
 
