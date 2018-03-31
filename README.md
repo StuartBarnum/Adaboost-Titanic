@@ -4,7 +4,7 @@
 This project has various motivations, beginning with my interest in exploring the behavior of the Adaboost machine-learning algorithm, with respect to
 both its accuracy and the behavior of the quantities responsible for the boosting: the  weights applied to the examples
 in the training dataset and the weights applied to the predictions made by the "weak" classifiers. (On adaboost, or "adaptive boosting," 
-see, for example, http://rob.schapire.net/papers/explaining-adaboost.pdf .)  With the Titanic dataset, one may attempt to "predict" survival of a Titanic passenger on the basis of other factors such as age and passenger class. It is relatively small and simple, thus
+see, for example, http://rob.schapire.net/papers/explaining-adaboost.pdf.)  With the Titanic dataset, one may attempt to "predict" survival of a Titanic passenger on the basis of other factors such as age and passenger class. It is relatively small and simple, thus
 allowing for relatively fast cross-validation and examimation of the behavior of the algorithm over successive iterations
 of boosting.
 
