@@ -1,0 +1,8 @@
+{
+  "training_n": 891,
+  "test_n": 418,
+  "missing_training_age": 177,
+  "surname_singleton_passengers": 534,
+  "passengers_with_training_surname_peer": 357,
+  "original_script_sha256": "70850780ff4e773e005f381dc50a14f378f91b9653bf1e47f5765d20a6131c7d"
+}
